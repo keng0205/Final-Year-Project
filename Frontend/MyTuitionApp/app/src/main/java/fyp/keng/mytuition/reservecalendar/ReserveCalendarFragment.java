@@ -1,0 +1,182 @@
+package fyp.keng.mytuition.reservecalendar;
+
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.alamkanak.weekview.WeekViewEvent;
+
+import java.util.ArrayList;
+
+import fyp.keng.mytuition.R;
+import fyp.keng.mytuition.adapters.EventListAdapter;
+import fyp.keng.mytuition.data.entities.APIError;
+import fyp.keng.mytuition.tutorselectdetails.TutorSelectDetailsFragment;
+
+
+public class ReserveCalendarFragment  extends Fragment implements ReserveCalendarContract.View, EventListAdapter.onEventSelectedListener {
+
+    private ReserveCalendarContract.Presenter presenter;
+
+    private ArrayList<WeekViewEvent> reservedTimes = new ArrayList<>();
+    private RecyclerView eventList;
+    private TextView emptyView;
+    private FloatingActionButton openReserveModal;
+
+    private int tutorID;
+    private int tutorPrice;
+    private boolean paired;
+    private LinearLayoutManager mLayoutManager;
+
+    public ReserveCalendarFragment() {}
+
+    public static ReserveCalendarFragment newInstance(int tutordID, int tutorPrice, boolean paired) {
+        Bundle arguments = new Bundle();
+        ReserveCalendarFragment fragment = new ReserveCalendarFragment();
+        arguments.putInt(TutorSelectDetailsFragment.TUTOR_ID, tutordID);
+        arguments.putInt(TutorSelectDetailsFragment.TUTOR_PRICE, tutorPrice);
+        arguments.putBoolean(TutorSelectDetailsFragment.ALREADY_PAIRED, paired);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View root = inflater.inflate(R.layout.content_reserve_calendar, container, false);
+        tutorID = getArguments().getInt(TutorSelectDetailsFragment.TUTOR_ID);
+        paired = getArguments().getBoolean(TutorSelectDetailsFragment.ALREADY_PAIRED);
+        tutorPrice = getArguments().getInt(TutorSelectDetailsFragment.TUTOR_PRICE);
+        eventList = (RecyclerView) root.findViewById(R.id.event_list);
+        mLayoutManager = new LinearLayoutManager(root.getContext());
+        EventListAdapter adapter = new EventListAdapter(null);
+
+      //  if (paired) {
+            adapter.setListener(this);
+       // }
+
+        adapter.setAlreadyPaired(paired);
+
+        eventList.setAdapter(adapter);
+        eventList.setLayoutManager(mLayoutManager);
+
+        emptyView = (TextView) root.findViewById(R.id.empty_view);
+        emptyView.setText("This tutor has no available times.");
+
+        openReserveModal = (FloatingActionButton) root.findViewById(R.id.events_open_order_modal);
+
+        openReserveModal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int eventCount = reservedTimes.size();
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Book " + eventCount + " hours?")
+                        .setMessage("Are you sure you want to pay RM" + eventCount * tutorPrice + "?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (WeekViewEvent e: reservedTimes) {
+                                    presenter.reserveTime(e);
+                                }
+                                if(!paired)
+                                {
+                                    presenter.pairWithTutor(tutorID);
+                                    paired=true;
+                                }
+                                reservedTimes.clear();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+
+        openReserveModal.hide();
+
+        presenter.getFreeTimes(tutorID);
+
+        return root;
+    }
+
+
+    @Override
+    public void setPresenter(ReserveCalendarContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setFreeTimes(ArrayList<WeekViewEvent> events) {
+        EventListAdapter adapter = (EventListAdapter) eventList.getAdapter();
+        adapter.setEvents(events);
+
+        if (events.isEmpty()) {
+            eventList.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+        else {
+            eventList.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onReserveTimeSuccess() {
+        presenter.getFreeTimes(tutorID);
+    }
+
+    @Override
+    public void onReserveTimeFail(ArrayList<APIError> errors) {
+        String errorMessage = "Something went wrong!";
+
+        if (errors != null && errors.size() > 0) {
+            errorMessage = errors.get(0).getMessage();
+        }
+
+        Snackbar.make(getView(), errorMessage, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSelected(int position) {
+        EventListAdapter adapter = (EventListAdapter) eventList.getAdapter();
+        WeekViewEvent event = (WeekViewEvent) adapter.getItem(position);
+
+        if (reservedTimes.contains((event))) {
+            reservedTimes.remove(event);
+            adapter.setEventUnselected(event.getID());
+        } else {
+            reservedTimes.add(event);
+            adapter.setEventSelected(event.getID());
+        }
+
+        if (reservedTimes.size() == 0) {
+            openReserveModal.hide();
+        } else {
+            openReserveModal.show();
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        EventListAdapter adapter = (EventListAdapter) eventList.getAdapter();
+        adapter.detachListener();
+        super.onDestroy();
+    }
+}

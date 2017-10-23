@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/tutorprofile_top"
+        android:layout_height="300dp"
+        android:layout_width="match_parent">
+        <ImageView
+            android:fitsSystemWindows="true"
+            android:scaleType="centerCrop"
+            android:id="@+id/tutor_select_details_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@drawable/gradient_black_fadeout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="80dp"
+            android:textColor="#fff"
+            android:textSize="30dp"
+            android:text="asdasd"
+            android:id="@+id/tutor_select_details_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tutorprofile_top">
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingRight="30dp"
+            android:paddingLeft="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="0.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_weight="0.3"
+                        android:text="HOURLY PRICE"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tutor_price"
+                        android:textColor="#000"
+                        android:textSize="30dp"
+                        android:layout_weight="0.7"
+                        android:text="0.00€"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <Button
+                    android:id="@+id/available_times"
+                    android:layout_weight="0.5"
+                    android:text="Available&#10;times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:padding="10dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:textColor="@color/colorPrimary"
+                android:text="ABOUT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+            </TextView>
+            <TextView
+                android:minHeight="200dp"
+                android:id="@+id/tutor_select_details_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TextView>
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/tutor_select_details_choose_tutor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@drawable/ic_person_add_white_24dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_alignBottom="@id/tutorprofile_top"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="15dp"
+        app:borderWidth="0dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/tutor_select_details_tutor_chosen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@drawable/ic_person_add_white_24dp"
+        android:backgroundTint="#ddd"
+        android:layout_alignBottom="@id/tutorprofile_top"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="15dp"
+        app:borderWidth="0dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

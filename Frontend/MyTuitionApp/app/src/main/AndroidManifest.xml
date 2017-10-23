@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fyp.keng.mytuition">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".MyTuitionApplication"
+        android:allowBackup="true"
+        android:label="My Tuition"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".pickauthentication.AuthenticationActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".tutorselectdetails.TutorSelectDetailsActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+
+        <activity
+            android:name=".reservecalendar.ReserveCalendarActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+            android:name=".usertypeselection.UserTypeSelectionActivity"
+            android:screenOrientation="portrait" ></activity>
+
+        <activity
+            android:name=".selecttutor.SelectTutorActivity"
+            android:screenOrientation="portrait" ></activity>
+        
+
+        <activity
+            android:name=".register.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:windowSoftInputMode="adjustPan"
+            android:name=".registertutorextra.RegisterExtraActivity"
+            android:label="RegisterTutorExtraActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".home.HomeActivity"
+            android:label="My Tuition"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:windowSoftInputMode="adjustPan"
+            android:name=".profile.ProfileActivity"
+            android:label="Profile"
+            android:screenOrientation="portrait" />
+
+        <activity 
+            android:name=".messaging.MessagingActivity"
+            android:label="Messaging"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            ></activity>
+
+        <service
+            android:name=".services.TuteeFirebaseInstanceIdService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.TuteeFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".splash.SplashActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
